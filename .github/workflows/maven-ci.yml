@@ -19,9 +19,74 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
+     #cache of Edge WebDriver
+    - name: Cache Edge WebDriver
+      uses: actions/cache@v4
+      with:
+        path: /home/runner/.cache/msedgedriver
+        key: edgedriver-125.0.2535.85
+    #Install Microsoft Edge 
+    - name: Install Microsoft Edge
+      run: |
+        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+        sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge-dev.list'
+        sudo apt update
+        sudo apt install microsoft-edge-dev
+    
+    #Decrypt web driver for run after the test
+    - name: Unzip local Edge WebDriver
+      run: |
+        unzip assets/edgedriver_linux64.zip
+        sudo mv msedgedriver /usr/local/bin/
+    
+    #Check if installed web driver
+    - name: Check Edge WebDriver
+      run: msedgedriver --version
+    
+    # Build Maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    
+    #Test Unit
     - name: Test Unit
       run: mvn test
+    
+    #Test Regression
     - name: Test Regression
       run: mvn test -Dtest=RegressionSuite
+    
+    - name: Build y test con cobertura
+      run: mvn clean verify
+   
+    - name: Upload JaCoCo coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: target/site/jacoco/
+
+    - name: Upload test results report
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: target/site/surefire-report/
+    
+    # Report of JMeter
+    - name: Run JMeter performance tests
+      run: |
+        mkdir -p jmeter-results
+        jmeter -n -t jmeter/Test-jmeter -l jmeter-results/results.jtl -e -o jmeter-results/html
+
+    - name: Upload JMeter performance report
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-report
+        path: jmeter-results/html/
+  
+    - name: Upload JMeter result data
+      uses: actions/upload-artifact@v3
+      with:
+        name: raw-results
+        path: jmeter/Result.xml
+

@@ -72,7 +72,12 @@ jobs:
         name: test-report
         path: target/site/surefire-report/
     
-    # Report of JMeter
+    # Install and Report of JMeter
+    - name: Install JMeter
+      run: |
+        sudo apt update
+        sudo apt install -y jmeter
+
     - name: Run JMeter performance tests
       run: |
         mkdir -p jmeter-results
@@ -83,9 +88,9 @@ jobs:
       with:
         name: performance-report
         path: jmeter-results/html/
-  
-    - name: Upload JMeter result data
+    
+    - name: Upload raw JMeter .jmx file
       uses: actions/upload-artifact@v4
       with:
-        name: raw-results
-        path: jmeter/Result.xml
+        name: jmeter-source
+        path: jmeter/Results.jmx

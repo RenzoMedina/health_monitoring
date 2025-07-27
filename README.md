@@ -27,8 +27,8 @@ En desarrollo — documentación y módulos en construcción.
         B --> C["Instalar WebDriver"]
         C --> D["Instalar Maven"]
         D --> E["Run test unitarios"]
-        F --> G["Run test Regression"]
-        G --> H["Entregar un reporte"]
+        E --> F["Run test Regression"]
+        F --> G["Entregar un reporte"]
 ```
 
 ## Authors

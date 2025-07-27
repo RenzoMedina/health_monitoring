@@ -61,13 +61,13 @@ jobs:
       run: mvn clean verify
    
     - name: Upload JaCoCo coverage report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: target/site/jacoco/
 
     - name: Upload test results report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-report
         path: target/site/surefire-report/
@@ -79,13 +79,13 @@ jobs:
         jmeter -n -t jmeter/Test-jmeter -l jmeter-results/results.jtl -e -o jmeter-results/html
 
     - name: Upload JMeter performance report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: performance-report
         path: jmeter-results/html/
   
     - name: Upload JMeter result data
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: raw-results
         path: jmeter/Result.xml

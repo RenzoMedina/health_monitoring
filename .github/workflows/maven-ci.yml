@@ -95,7 +95,7 @@ jobs:
         name: jmeter-source
         path: jmeter/Results.jmx
 
-jobs:
+
   sonarqube:
     name: Build and analyze
     runs-on: ubuntu-latest
